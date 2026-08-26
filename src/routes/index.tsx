@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 type Destination = {
   name: string;
   code: string;
-  image: string;
+  image?: string;
   blurb: string;
 };
 
@@ -45,7 +45,36 @@ const DESTINATIONS: Destination[] = [
   { name: "Vietnam", code: "vn", image: vietnamImg, blurb: "E-visa up to 90 days" },
   { name: "Thailand", code: "th", image: thailandImg, blurb: "Tourist visa & visa exemption" },
   { name: "Korea", code: "kr", image: koreaImg, blurb: "K-ETA & C-3 tourist visa" },
+  { name: "United Kingdom", code: "gb", blurb: "Standard visitor visa · 6 months" },
+  { name: "Canada", code: "ca", blurb: "Visitor visa & eTA" },
+  { name: "Schengen (France)", code: "fr", blurb: "Schengen Type C · 90 days" },
+  { name: "Germany", code: "de", blurb: "Schengen Type C tourist visa" },
+  { name: "Italy", code: "it", blurb: "Schengen Type C tourist visa" },
+  { name: "Spain", code: "es", blurb: "Schengen Type C tourist visa" },
+  { name: "Netherlands", code: "nl", blurb: "Schengen Type C tourist visa" },
+  { name: "Switzerland", code: "ch", blurb: "Schengen Type C tourist visa" },
+  { name: "New Zealand", code: "nz", blurb: "Visitor visa & NZeTA" },
+  { name: "Singapore", code: "sg", blurb: "SG Arrival Card & entry visa" },
+  { name: "Malaysia", code: "my", blurb: "eVisa & eNTRI" },
+  { name: "China", code: "cn", blurb: "L tourist visa" },
+  { name: "Hong Kong", code: "hk", blurb: "Pre-arrival registration" },
+  { name: "UAE (Dubai)", code: "ae", blurb: "Tourist visa 30 / 60 days" },
+  { name: "Qatar", code: "qa", blurb: "Hayya & tourist visa" },
+  { name: "Saudi Arabia", code: "sa", blurb: "eVisa & Umrah visa" },
+  { name: "Turkey", code: "tr", blurb: "e-Visa · 30 days" },
+  { name: "India", code: "in", blurb: "e-Tourist visa" },
+  { name: "Sri Lanka", code: "lk", blurb: "ETA · 30 days" },
+  { name: "Indonesia (Bali)", code: "id", blurb: "e-VOA · 30 days" },
+  { name: "Philippines", code: "ph", blurb: "9(a) tourist visa" },
+  { name: "Cambodia", code: "kh", blurb: "e-Visa · 30 days" },
+  { name: "Nepal", code: "np", blurb: "Visa on arrival" },
+  { name: "Egypt", code: "eg", blurb: "e-Visa · 30 days" },
+  { name: "South Africa", code: "za", blurb: "Visitor visa · 90 days" },
+  { name: "Brazil", code: "br", blurb: "e-Visa for tourism" },
+  { name: "Russia", code: "ru", blurb: "Unified e-Visa · 16 days" },
 ];
+
+const PAGE_SIZE = 9;
 
 const PURPOSES = ["Tourism", "Business", "Study", "Family Visit", "Other"];
 
