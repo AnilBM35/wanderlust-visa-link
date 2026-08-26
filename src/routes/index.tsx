@@ -162,13 +162,16 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
         </div>
       </section>
 
-      <section className="bg-surface py-14 sm:py-20">
+      <section id="destinations" className="scroll-mt-20 bg-surface py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-2xl font-black text-navy sm:text-3xl">Popular destinations</h2>
-          <p className="mt-2 text-travel-blue">Choose a country to check its visa requirements.</p>
+          <h2 className="text-2xl font-black text-navy sm:text-3xl">All destinations</h2>
+          <p className="mt-2 text-travel-blue">
+            Choose a country to check its visa requirements — {DESTINATIONS.length} destinations
+            covered.
+          </p>
 
           <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {DESTINATIONS.map((d) => (
+            {pageItems.map((d) => (
               <li key={d.code}>
                 <div
                   role="button"
