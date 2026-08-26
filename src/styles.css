@@ -64,7 +64,12 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.29 0.06 244);
+  /* Brand: #123B5D navy, #1F6F9F travel blue, #F28C28 adventure orange */
+  --brand-navy: oklch(0.32 0.062 245.5);
+  --brand-blue: oklch(0.51 0.096 240);
+  --brand-orange: oklch(0.72 0.161 55);
+
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
