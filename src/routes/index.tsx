@@ -1,24 +1,355 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import heroImg from "@/assets/hero.jpg";
+import usaImg from "@/assets/usa.jpg";
+import australiaImg from "@/assets/australia.jpg";
+import japanImg from "@/assets/japan.jpg";
+import vietnamImg from "@/assets/vietnam.jpg";
+import thailandImg from "@/assets/thailand.jpg";
+import koreaImg from "@/assets/korea.jpg";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Visa Guide | Global Rising Travel" },
+      {
+        name: "description",
+        content:
+          "Check visa requirements and start your application for the USA, Australia, Japan, Vietnam, Thailand and Korea with Global Rising Travel.",
+      },
+      { property: "og:title", content: "Visa Guide | Global Rising Travel" },
+      {
+        property: "og:description",
+        content:
+          "Country-by-country visa requirements and a fast application form handled by our travel team.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: VisaGuideApp,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+type Destination = {
+  name: string;
+  code: string;
+  image: string;
+  blurb: string;
+};
+
+const DESTINATIONS: Destination[] = [
+  { name: "USA", code: "us", image: usaImg, blurb: "B1/B2 visitor visa · Interview required" },
+  { name: "Australia", code: "au", image: australiaImg, blurb: "eVisitor & Subclass 600" },
+  { name: "Japan", code: "jp", image: japanImg, blurb: "Short-stay tourist visa" },
+  { name: "Vietnam", code: "vn", image: vietnamImg, blurb: "E-visa up to 90 days" },
+  { name: "Thailand", code: "th", image: thailandImg, blurb: "Tourist visa & visa exemption" },
+  { name: "Korea", code: "kr", image: koreaImg, blurb: "K-ETA & C-3 tourist visa" },
+];
+
+const PURPOSES = ["Tourism", "Business", "Study", "Family Visit", "Other"];
+
+const inputClass =
+  "w-full rounded-md border border-navy/20 bg-white px-3 py-2.5 text-navy outline-none transition focus-visible:border-travel-blue focus-visible:ring-2 focus-visible:ring-travel-blue/40";
+const labelClass = "mb-1.5 block text-sm font-semibold text-navy";
+
+function Navbar({ onBack }: { onBack?: () => void }) {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <header className="sticky top-0 z-50 bg-navy text-white shadow-md">
+      <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3.5 sm:px-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-adventure text-base font-black text-navy">
+            GR
+          </span>
+          <span className="min-w-0 truncate text-lg font-extrabold tracking-tight">
+            Global Rising <span className="text-adventure">Travel</span>
+          </span>
+        </div>
+        <nav className="flex items-center gap-4 sm:gap-6">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="rounded-md text-sm font-medium text-white/85 underline-offset-4 transition hover:text-adventure hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-adventure"
+            >
+              ← All destinations
+            </button>
+          )}
+          <span className="border-b-2 border-adventure pb-0.5 text-sm font-bold uppercase tracking-wide sm:text-base">
+            Visa Guide
+          </span>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="bg-navy py-10 text-white/70">
+      <div className="mx-auto max-w-6xl px-4 text-sm sm:px-6">
+        <p className="font-bold text-white">Global Rising Travel</p>
+        <p className="mt-2 max-w-xl">
+          Trusted visa assistance, tailored itineraries and end-to-end travel support.
+        </p>
+        <p className="mt-6 text-xs">© {new Date().getFullYear()} Global Rising Travel. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+}
+
+function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
+  return (
+    <>
+      <section className="relative isolate overflow-hidden bg-navy">
+        <img
+          src={heroImg}
+          alt="Aircraft wing above the clouds over a tropical coastline"
+          width={1600}
+          height={900}
+          className="absolute inset-0 h-full w-full object-cover opacity-35"
+        />
+        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+          <span className="inline-block rounded-full bg-adventure px-3 py-1 text-xs font-bold uppercase tracking-wider text-navy">
+            Visa Guide
+          </span>
+          <h1 className="mt-5 max-w-3xl text-3xl font-black leading-tight text-white sm:text-5xl">
+            Know exactly what your visa needs — before you book.
+          </h1>
+          <p className="mt-4 max-w-2xl text-base text-white/85 sm:text-lg">
+            Pick your destination to see the documents, processing times and requirements our
+            visa team handles for you, then send us your application in under two minutes.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-surface py-14 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <h2 className="text-2xl font-black text-navy sm:text-3xl">Popular destinations</h2>
+          <p className="mt-2 text-travel-blue">Choose a country to check its visa requirements.</p>
+
+          <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {DESTINATIONS.map((d) => (
+              <li key={d.code}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => onSelect(d)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSelect(d);
+                    }
+                  }}
+                  aria-label={`Check visa requirements for ${d.name}`}
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-navy/10 transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+                >
+                  <div className="relative">
+                    <img
+                      src={d.image}
+                      alt={`Travel scenery in ${d.name}`}
+                      loading="lazy"
+                      width={800}
+                      height={600}
+                      className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <img
+                      src={`https://flagcdn.com/w80/${d.code}.png`}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      width={48}
+                      height={48}
+                      className="absolute -bottom-6 left-5 h-12 w-12 rounded-full border-4 border-white object-cover shadow-md"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-5 pt-9">
+                    <h3 className="text-xl font-black text-navy">{d.name}</h3>
+                    <p className="mt-1 text-sm text-travel-blue">{d.blurb}</p>
+                    <span className="mt-5 inline-flex w-full items-center justify-center rounded-md bg-adventure px-4 py-2.5 text-sm font-bold text-white transition group-hover:brightness-95">
+                      Check Visa Requirements
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function VisaForm({ country, onBack }: { country: string; onBack: () => void }) {
+  const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  if (submitted) {
+    return (
+      <section className="bg-surface py-16 sm:py-24">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6">
+          <div className="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-navy/10">
+            <span className="grid mx-auto h-14 w-14 place-items-center rounded-full bg-adventure text-2xl font-black text-white">
+              ✓
+            </span>
+            <h1 className="mt-5 text-2xl font-black text-navy sm:text-3xl">
+              Thank you{name ? `, ${name.split(" ")[0]}` : ""}!
+            </h1>
+            <p className="mt-3 text-travel-blue">
+              Your {country} visa application request has been received. A member of our visa team
+              will follow up shortly about your {country} trip.
+            </p>
+            <button
+              type="button"
+              onClick={onBack}
+              className="mt-7 inline-flex items-center justify-center rounded-md bg-adventure px-5 py-2.5 font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+            >
+              Explore more destinations
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="bg-surface py-12 sm:py-16">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6">
+        <h1 className="text-2xl font-black text-navy sm:text-3xl">{country} Visa Application</h1>
+        <p className="mt-2 text-travel-blue">
+          Fill in the details below and our team will confirm your requirements by phone or email.
+        </p>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 space-y-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-navy/10 sm:p-8"
+        >
+          <div>
+            <label className={labelClass} htmlFor="fullName">
+              Full Name <span className="text-adventure">*</span>
+            </label>
+            <input
+              id="fullName"
+              name="fullName"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={100}
+              autoComplete="name"
+              className={inputClass}
+            />
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="phone">
+              Phone Number <span className="text-adventure">*</span>
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              maxLength={30}
+              autoComplete="tel"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className={labelClass} htmlFor="purpose">
+                Purpose of Visit <span className="text-adventure">*</span>
+              </label>
+              <select id="purpose" name="purpose" required defaultValue="" className={inputClass}>
+                <option value="" disabled>
+                  Select a purpose
+                </option>
+                {PURPOSES.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="groupSize">
+                Group Size <span className="text-adventure">*</span>
+              </label>
+              <input
+                id="groupSize"
+                name="groupSize"
+                type="number"
+                min={1}
+                max={50}
+                required
+                defaultValue={1}
+                className={inputClass}
+              />
+            </div>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className={labelClass} htmlFor="email">
+                Email <span className="font-normal text-travel-blue">(optional)</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                maxLength={255}
+                autoComplete="email"
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className={labelClass} htmlFor="travelDate">
+                Preferred Travel Date{" "}
+                <span className="font-normal text-travel-blue">(optional)</span>
+              </label>
+              <input id="travelDate" name="travelDate" type="date" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="notes">
+              Additional Notes <span className="font-normal text-travel-blue">(optional)</span>
+            </label>
+            <textarea id="notes" name="notes" rows={4} maxLength={1000} className={inputClass} />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full rounded-md bg-adventure px-5 py-3 text-base font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          >
+            Submit Application
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function VisaGuideApp() {
+  const [selected, setSelected] = useState<Destination | null>(null);
+
+  return (
+    <div className="min-h-screen bg-surface">
+      <Navbar onBack={selected ? () => setSelected(null) : undefined} />
+      <main>
+        {selected ? (
+          <VisaForm country={selected.name} onBack={() => setSelected(null)} />
+        ) : (
+          <Landing onSelect={setSelected} />
+        )}
+      </main>
+      <Footer />
     </div>
   );
 }
