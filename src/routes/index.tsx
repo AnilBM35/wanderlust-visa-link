@@ -187,14 +187,27 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
                   className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-navy/10 transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
                 >
                   <div className="relative">
-                    <img
-                      src={d.image}
-                      alt={`Travel scenery in ${d.name}`}
-                      loading="lazy"
-                      width={800}
-                      height={600}
-                      className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
+                    {d.image ? (
+                      <img
+                        src={d.image}
+                        alt={`Travel scenery in ${d.name}`}
+                        loading="lazy"
+                        width={800}
+                        height={600}
+                        className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="grid h-52 w-full place-items-center overflow-hidden bg-navy">
+                        <img
+                          src={`https://flagcdn.com/w640/${d.code}.png`}
+                          alt={`Flag of ${d.name}`}
+                          loading="lazy"
+                          width={640}
+                          height={480}
+                          className="h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
                     <img
                       src={`https://flagcdn.com/w80/${d.code}.png`}
                       alt=""
