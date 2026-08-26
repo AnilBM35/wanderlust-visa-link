@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 
 import heroImg from "@/assets/hero.jpg";
 import usaImg from "@/assets/usa.jpg";
@@ -8,6 +8,8 @@ import japanImg from "@/assets/japan.jpg";
 import vietnamImg from "@/assets/vietnam.jpg";
 import thailandImg from "@/assets/thailand.jpg";
 import koreaImg from "@/assets/korea.jpg";
+import logoAsset from "@/assets/logo.png.asset.json";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -74,7 +76,8 @@ const DESTINATIONS: Destination[] = [
   { name: "Russia", code: "ru", blurb: "Unified e-Visa · 16 days" },
 ];
 
-const PAGE_SIZE = 9;
+const DESKTOP_PAGE_SIZE = 15;
+const MOBILE_PAGE_SIZE = 10;
 
 const PURPOSES = ["Tourism", "Business", "Study", "Family Visit", "Other"];
 
