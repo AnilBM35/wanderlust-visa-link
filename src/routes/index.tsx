@@ -229,6 +229,44 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
               </li>
             ))}
           </ul>
+
+          <nav
+            aria-label="Destination pages"
+            className="mt-10 flex flex-wrap items-center justify-center gap-2"
+          >
+            <button
+              type="button"
+              onClick={() => goTo(page - 1)}
+              disabled={page === 1}
+              className="rounded-md border border-navy/20 bg-white px-4 py-2 text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+            >
+              ← Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => goTo(n)}
+                aria-current={n === page ? "page" : undefined}
+                aria-label={`Page ${n}`}
+                className={
+                  n === page
+                    ? "h-10 w-10 rounded-md bg-adventure text-sm font-black text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+                    : "h-10 w-10 rounded-md border border-navy/20 bg-white text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+                }
+              >
+                {n}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => goTo(page + 1)}
+              disabled={page === totalPages}
+              className="rounded-md border border-navy/20 bg-white px-4 py-2 text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+            >
+              Next →
+            </button>
+          </nav>
         </div>
       </section>
     </>
