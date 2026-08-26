@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
 type Destination = {
   name: string;
   code: string;
-  image: string;
+  image?: string;
   blurb: string;
 };
 
@@ -45,7 +45,36 @@ const DESTINATIONS: Destination[] = [
   { name: "Vietnam", code: "vn", image: vietnamImg, blurb: "E-visa up to 90 days" },
   { name: "Thailand", code: "th", image: thailandImg, blurb: "Tourist visa & visa exemption" },
   { name: "Korea", code: "kr", image: koreaImg, blurb: "K-ETA & C-3 tourist visa" },
+  { name: "United Kingdom", code: "gb", blurb: "Standard visitor visa · 6 months" },
+  { name: "Canada", code: "ca", blurb: "Visitor visa & eTA" },
+  { name: "Schengen (France)", code: "fr", blurb: "Schengen Type C · 90 days" },
+  { name: "Germany", code: "de", blurb: "Schengen Type C tourist visa" },
+  { name: "Italy", code: "it", blurb: "Schengen Type C tourist visa" },
+  { name: "Spain", code: "es", blurb: "Schengen Type C tourist visa" },
+  { name: "Netherlands", code: "nl", blurb: "Schengen Type C tourist visa" },
+  { name: "Switzerland", code: "ch", blurb: "Schengen Type C tourist visa" },
+  { name: "New Zealand", code: "nz", blurb: "Visitor visa & NZeTA" },
+  { name: "Singapore", code: "sg", blurb: "SG Arrival Card & entry visa" },
+  { name: "Malaysia", code: "my", blurb: "eVisa & eNTRI" },
+  { name: "China", code: "cn", blurb: "L tourist visa" },
+  { name: "Hong Kong", code: "hk", blurb: "Pre-arrival registration" },
+  { name: "UAE (Dubai)", code: "ae", blurb: "Tourist visa 30 / 60 days" },
+  { name: "Qatar", code: "qa", blurb: "Hayya & tourist visa" },
+  { name: "Saudi Arabia", code: "sa", blurb: "eVisa & Umrah visa" },
+  { name: "Turkey", code: "tr", blurb: "e-Visa · 30 days" },
+  { name: "India", code: "in", blurb: "e-Tourist visa" },
+  { name: "Sri Lanka", code: "lk", blurb: "ETA · 30 days" },
+  { name: "Indonesia (Bali)", code: "id", blurb: "e-VOA · 30 days" },
+  { name: "Philippines", code: "ph", blurb: "9(a) tourist visa" },
+  { name: "Cambodia", code: "kh", blurb: "e-Visa · 30 days" },
+  { name: "Nepal", code: "np", blurb: "Visa on arrival" },
+  { name: "Egypt", code: "eg", blurb: "e-Visa · 30 days" },
+  { name: "South Africa", code: "za", blurb: "Visitor visa · 90 days" },
+  { name: "Brazil", code: "br", blurb: "e-Visa for tourism" },
+  { name: "Russia", code: "ru", blurb: "Unified e-Visa · 16 days" },
 ];
+
+const PAGE_SIZE = 9;
 
 const PURPOSES = ["Tourism", "Business", "Study", "Family Visit", "Other"];
 
@@ -99,6 +128,16 @@ function Footer() {
 }
 
 function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(DESTINATIONS.length / PAGE_SIZE);
+  const start = (page - 1) * PAGE_SIZE;
+  const pageItems = DESTINATIONS.slice(start, start + PAGE_SIZE);
+
+  function goTo(next: number) {
+    setPage(next);
+    document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <>
       <section className="relative isolate overflow-hidden bg-navy">
@@ -123,13 +162,16 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
         </div>
       </section>
 
-      <section className="bg-surface py-14 sm:py-20">
+      <section id="destinations" className="scroll-mt-20 bg-surface py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 className="text-2xl font-black text-navy sm:text-3xl">Popular destinations</h2>
-          <p className="mt-2 text-travel-blue">Choose a country to check its visa requirements.</p>
+          <h2 className="text-2xl font-black text-navy sm:text-3xl">All destinations</h2>
+          <p className="mt-2 text-travel-blue">
+            Choose a country to check its visa requirements — {DESTINATIONS.length} destinations
+            covered.
+          </p>
 
           <ul className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {DESTINATIONS.map((d) => (
+            {pageItems.map((d) => (
               <li key={d.code}>
                 <div
                   role="button"
@@ -145,14 +187,27 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
                   className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-navy/10 transition hover:-translate-y-1 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
                 >
                   <div className="relative">
-                    <img
-                      src={d.image}
-                      alt={`Travel scenery in ${d.name}`}
-                      loading="lazy"
-                      width={800}
-                      height={600}
-                      className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
+                    {d.image ? (
+                      <img
+                        src={d.image}
+                        alt={`Travel scenery in ${d.name}`}
+                        loading="lazy"
+                        width={800}
+                        height={600}
+                        className="h-52 w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="grid h-52 w-full place-items-center overflow-hidden bg-navy">
+                        <img
+                          src={`https://flagcdn.com/w640/${d.code}.png`}
+                          alt={`Flag of ${d.name}`}
+                          loading="lazy"
+                          width={640}
+                          height={480}
+                          className="h-full w-full object-cover opacity-70 transition duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
                     <img
                       src={`https://flagcdn.com/w80/${d.code}.png`}
                       alt=""
@@ -174,6 +229,44 @@ function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
               </li>
             ))}
           </ul>
+
+          <nav
+            aria-label="Destination pages"
+            className="mt-10 flex flex-wrap items-center justify-center gap-2"
+          >
+            <button
+              type="button"
+              onClick={() => goTo(page - 1)}
+              disabled={page === 1}
+              className="rounded-md border border-navy/20 bg-white px-4 py-2 text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+            >
+              ← Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => goTo(n)}
+                aria-current={n === page ? "page" : undefined}
+                aria-label={`Page ${n}`}
+                className={
+                  n === page
+                    ? "h-10 w-10 rounded-md bg-adventure text-sm font-black text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+                    : "h-10 w-10 rounded-md border border-navy/20 bg-white text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+                }
+              >
+                {n}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => goTo(page + 1)}
+              disabled={page === totalPages}
+              className="rounded-md border border-navy/20 bg-white px-4 py-2 text-sm font-bold text-navy transition hover:border-travel-blue hover:text-travel-blue disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-travel-blue"
+            >
+              Next →
+            </button>
+          </nav>
         </div>
       </section>
     </>
