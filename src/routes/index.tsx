@@ -128,6 +128,16 @@ function Footer() {
 }
 
 function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
+  const [page, setPage] = useState(1);
+  const totalPages = Math.ceil(DESTINATIONS.length / PAGE_SIZE);
+  const start = (page - 1) * PAGE_SIZE;
+  const pageItems = DESTINATIONS.slice(start, start + PAGE_SIZE);
+
+  function goTo(next: number) {
+    setPage(next);
+    document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <>
       <section className="relative isolate overflow-hidden bg-navy">
