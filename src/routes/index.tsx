@@ -53,7 +53,7 @@ const inputClass =
   "w-full rounded-md border border-navy/20 bg-white px-3 py-2.5 text-navy outline-none transition focus-visible:border-travel-blue focus-visible:ring-2 focus-visible:ring-travel-blue/40";
 const labelClass = "mb-1.5 block text-sm font-semibold text-navy";
 
-function Navbar({ onBack }: { onBack?: () => void }) {
+function Navbar({ onBack }: { onBack?: (() => void) | undefined }) {
   return (
     <header className="sticky top-0 z-50 bg-navy text-white shadow-md">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3.5 sm:px-6">
