@@ -132,9 +132,16 @@ function Footer() {
 
 function Landing({ onSelect }: { onSelect: (d: Destination) => void }) {
   const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(DESTINATIONS.length / PAGE_SIZE);
-  const start = (page - 1) * PAGE_SIZE;
-  const pageItems = DESTINATIONS.slice(start, start + PAGE_SIZE);
+  const isMobile = useIsMobile();
+  const pageSize = isMobile ? MOBILE_PAGE_SIZE : DESKTOP_PAGE_SIZE;
+  const totalPages = Math.ceil(DESTINATIONS.length / pageSize);
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const pageItems = DESTINATIONS.slice(start, start + pageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [pageSize]);
 
   function goTo(next: number) {
     setPage(next);
